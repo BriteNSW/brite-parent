@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.britensw</groupId>
+    <artifactId>brite-parent-pom</artifactId>
+    <version>1.0.0.Final</version>
+
+    <packaging>pom</packaging>
+
+    <name>BriteNSW Parent POM</name>
+    <description>Parent POM for BriteNSW projects.</description>
+    <url>http://www.britensw.com.au</url>
+
+    <modules>
+        <module>checkstyle</module>
+        <module>util</module>
+    </modules>
+
+    <scm>
+        <connection>scm:git:git@github.com:BriteNSW/brite-parent.git</connection>
+        <developerConnection>scm:git:git@github.com:BriteNSW/brite-parent.git</developerConnection>
+        <url>http://github.com/BriteNSW/brite-parent</url>
+    </scm>
+
+    <organization>
+        <name>BriteNSW</name>
+        <url>http://www.britensw.com.au</url>
+    </organization>
+
+    <distributionManagement>
+        <repository>
+            <id>britensw-repository</id>
+            <name>BriteNSW Nexus</name>
+            <url>http://repository.britensw.com.au/nexus/content/repositories/britensw</url>
+        </repository>
+        <snapshotRepository>
+            <id>britensw-snapshot-repository</id>
+            <name>BriteNSW Snapshots</name>
+            <url>http://repository.britensw.com.au/nexus/content/repositories/britensw-snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>
