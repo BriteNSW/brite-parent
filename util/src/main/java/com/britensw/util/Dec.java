@@ -32,6 +32,11 @@ public class Dec {
         return that.setScale(4, HALF_UP);
     }
 
+    public static boolean betweenInclusive(final BigDecimal target, final BigDecimal low, final BigDecimal high) {
+        return low.abs().subtract(target.abs()).compareTo(target) >= 0
+                && high.compareTo(target) <= 0;
+    }
+
     // Formatting
     public static final String ZERO_DEC_CSV = "##0";
     public static final String TWO_DEC_CSV = "##0.00";
