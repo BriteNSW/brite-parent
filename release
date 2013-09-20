@@ -1,0 +1,65 @@
+#!/bin/bash
+#
+# @author Brent Douglas <brent.n.douglas@gmail.com>
+#
+
+usage() {
+  echo "Usage: $0 [-r <release_version>] [-n <next_version>] [-m <mvn_args>]" 1>&2
+  exit 65
+}
+
+SNAP=true
+
+while getopts ":r:n:m:" o; do
+  case "${o}" in
+    r)
+      RELEASE_VERSION=${OPTARG}
+      SNAP=false
+      ;;
+    n)
+      NEXT_VERSION=${OPTARG}
+      SNAP=false
+      ;;
+    m)
+      MVN_ARGS="${MVN_ARGS} ${OPTARG}"
+      ;;
+    *)
+      usage
+      ;;
+  esac
+done
+shift $((OPTIND-1))
+
+if ${SNAP}; then
+  REPO="britensw-snapshot-repository::default::http://repository.britensw.com.au/nexus/content/repositories/britensw-snapshot"
+else
+  REPO="britensw-repository::default::http://repository.britensw.com.au/nexus/content/repositories/britensw"
+fi
+echo "Using repo ${REPO}"
+
+if ! ${SNAP}; then
+  if [ -z "${RELEASE_VERSION}" ] || [ -z "${NEXT_VERSION}" ]; then
+    usage
+  fi
+fi
+
+if ! ${SNAP} && ! git diff-files --quiet --ignore-submodules; then
+  echo "You have unstaged changes"
+  exit 1
+fi
+
+if ! ${SNAP}; then
+  echo "Updating version to ${RELEASE_VERSION}"
+  mvn versions:set -DnewVersion="${RELEASE_VERSION}"
+  echo "Releasing version ${RELEASE_VERSION}"
+  git commit -m "Release version ${RELEASE_VERSION}"
+fi
+
+mvn clean install deploy -P release -DaltDeploymentRepository=${REPO} ${MVN_ARGS}
+
+if ! ${SNAP}; then
+  echo "Updating version to ${NEXT_VERSION}"
+  mvn versions:set -DnewVersion="${NEXT_VERSION}"
+  git add .
+  git commit -m "Prepare development version ${NEXT_VERSION}"
+fi

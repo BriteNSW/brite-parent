@@ -3,6 +3,7 @@ src/generated
 target
 release.properties
 *.releaseBackup
+*.versionsBackup
 
 # VIM
 *.swp
