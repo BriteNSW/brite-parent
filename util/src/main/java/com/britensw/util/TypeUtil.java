@@ -7,6 +7,9 @@ import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Brent Douglas <brent.n.douglas@gmail.com>
@@ -70,6 +73,40 @@ public class TypeUtil {
     }
 
     /**
+     * @param clazz The class to retrieve the hierarchy of.
+     * @return Every type {@param clazz} extends or implements including itself.
+     *         The ordering is classes from clazz -> {@link Object} then interfaces
+     *         implemented by those classes retrieved in that order, the any interfaces
+     *         extended by those interfaces in an undefined order.
+     */
+    public static Class<?>[] hierarchy(final Class<?> clazz) {
+        final LinkedHashMap<Class<?>, Class<?>[]> map = new LinkedHashMap<Class<?>, Class<?>[]>();
+        map.put(clazz, clazz.getInterfaces());
+        Class<?> superClass = clazz;
+        while ((superClass = superClass.getSuperclass()) != null) {
+            map.put(superClass, superClass.getInterfaces());
+        }
+        final List<Class<?>> list = new LinkedList<Class<?>>();
+        for (final Class<?> that : map.keySet()) {
+            list.add(that);
+        }
+        for (final Class<?>[] that : map.values()) {
+            for (final Class<?> x : that) {
+                list.add(x);
+                _readInterfaces(x, list);
+            }
+        }
+        return list.toArray(new Class[list.size()]);
+    }
+
+    private static void _readInterfaces(final Class<?> clazz, final List<Class<?>> list) {
+        for (final Class<?> interfaz : clazz.getInterfaces()) {
+            list.add(interfaz);
+            _readInterfaces(interfaz, list);
+        }
+    }
+
+    /**
      * Retrieve an annotation from a method or it's class
      *
      * @param annotationClass
@@ -88,11 +125,31 @@ public class TypeUtil {
     }
 
     public static Class<?> resolve(final Type type, final Object that) {
-        return type instanceof Class
-                ? (Class<?>)type
-                : that == null
-                    ? Object.class
-                    : that.getClass();
+        return resolve(type, that, 0);
+    }
+
+    private static Class<?> resolve(final Type type, final Object that, final int depth) {
+        if (type instanceof Class) {
+            return (Class<?>)type;
+        } else if (type instanceof ParameterizedType) {
+            return resolve(((ParameterizedType)type).getRawType(), that, depth + 1);
+        } else if (type instanceof TypeVariableImpl) {
+            if (depth < 3) {
+                final Type[] bounds = ((TypeVariableImpl)type).getBounds();
+                for (final Type bound : bounds) {
+                    if (bound instanceof Class) {
+                        return (Class<?>) bound;
+                    }
+                    final Class possible = resolve(bound, that, depth + 1);
+                    if (!Object.class.equals(possible)) {
+                        return possible;
+                    }
+                }
+            }
+        }
+        return that == null
+                ? Object.class
+                : that.getClass();
     }
 
     public static Type[] getGenericReturnTypes(final Method method) {
