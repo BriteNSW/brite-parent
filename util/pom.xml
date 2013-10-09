@@ -15,7 +15,7 @@
     <name>BriteNSW Utils</name>
 
     <properties>
-        <version.org.hibernate.hibernate-core>4.2.2.Final</version.org.hibernate.hibernate-core>
+        <version.org.hibernate.hibernate-core>4.2.5.Final</version.org.hibernate.hibernate-core>
         <version.org.jboss.spec.jboss-javaee-6.0>2.0.0.Final</version.org.jboss.spec.jboss-javaee-6.0>
     </properties>
 
