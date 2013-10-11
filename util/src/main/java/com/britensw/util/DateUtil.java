@@ -192,4 +192,15 @@ public class DateUtil {
         }
         return calendar;
     }
+
+    public static boolean isWeekDay(final Date date) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return isWeekDay(calendar);
+    }
+
+    public static boolean isWeekDay(final Calendar calendar) {
+        final int day = calendar.get(Calendar.DAY_OF_WEEK);
+        return day >= Calendar.MONDAY && day <= Calendar.FRIDAY;
+    }
 }
