@@ -47,10 +47,10 @@
         <version.org.apache.maven.plugins.maven-jar-plugin>2.3.2</version.org.apache.maven.plugins.maven-jar-plugin>
         <version.org.apache.maven.plugins.maven-javadoc-plugin>2.9</version.org.apache.maven.plugins.maven-javadoc-plugin>
         <version.org.apache.maven.plugins.maven-resources-plugin>2.4.1</version.org.apache.maven.plugins.maven-resources-plugin>
+        <version.org.apache.maven.plugins.maven-source-plugin>2.2.1</version.org.apache.maven.plugins.maven-source-plugin>
         <version.org.apache.maven.plugins.maven-surefire-plugin>2.12.4</version.org.apache.maven.plugins.maven-surefire-plugin>
         <version.org.apache.maven.plugins.maven-war-plugin>2.1.1</version.org.apache.maven.plugins.maven-war-plugin>
         <version.org.codehaus.mojo.versions-maven-plugin>2.1</version.org.codehaus.mojo.versions-maven-plugin>
-        <version.org.apache.maven.plugins.maven-source-plugin>2.2.1</version.org.apache.maven.plugins.maven-source-plugin>
     </properties>
 
     <build>
@@ -272,6 +272,24 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <profiles>
@@ -286,18 +304,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>
